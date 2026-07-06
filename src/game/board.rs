@@ -1,6 +1,8 @@
+use super::cell::Cell;
+
 pub struct Board {
-     width: usize,
-     height: usize,
+    pub width: usize,
+    pub height: usize,
      cells: Vec<Vec<Cell>>,
 }
 

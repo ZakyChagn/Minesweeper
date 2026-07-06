@@ -1,3 +1,8 @@
+mod app;
+mod game;
+mod message;
+
+use app::Minesweaper;
 use iced::{
     Sandbox, Settings, Element,
     widget::{column, button, text, container},
@@ -5,7 +10,8 @@ use iced::{
 };
 
 pub fn main() -> iced::Result {
-    Counter::run(Settings::default())
+    Minesweaper::run(Settings::default())
+    //Counter::run(Settings::default())
 }
 
 #[derive(Debug, Clone)]
@@ -36,7 +42,7 @@ impl Sandbox for Counter {
         }
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<'_,Message> {
         // Layout vertical centré
         let content = column![
             button("+").on_press(Message::Increment),
