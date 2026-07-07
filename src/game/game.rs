@@ -7,7 +7,7 @@ pub struct Game {
 impl Game {
     pub fn new(width: usize, height: usize) -> Self {
         Self {
-            board: Board::new(width, height),
+            board: Board::new(width, height, (width * height) / 6), // Place mines in 1/6 of the cells
         }
     }
 

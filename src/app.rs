@@ -45,7 +45,7 @@ impl Sandbox for Minesweaper {
                 let cell = self.game.board.get_cell(x, y).unwrap();
                 let cell_text = if cell.is_revealed {
                     if cell.is_mine {
-                        "💣".to_string()
+                        "(`)".to_string()
                     } else {
                         if cell.adjacent_mines > 0 {
                             cell.adjacent_mines.to_string()

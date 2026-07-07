@@ -1,3 +1,5 @@
+use rand::seq::SliceRandom;
+
 use super::cell::Cell;
 
 pub struct Board {
@@ -7,9 +9,49 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize) -> Self {
+    pub fn new(width: usize, height: usize, mines : usize) -> Self {
         let cells = vec![vec![Cell::new(); width]; height];
-        Board { width, height, cells }
+        let mut board = Self {
+            width,
+            height,
+            cells,
+        };
+        board.place_mines(mines);
+        board.calculate_numbers();
+
+        board
+    }
+
+    pub fn place_mines(&mut self, mines: usize) {
+        let mut positions: Vec<(usize, usize)> = Vec::new();
+
+        for y in 0..self.height {
+            for x in 0..self.width {
+                positions.push((x, y));
+            }            
+        }
+        positions.shuffle(&mut rand::thread_rng());
+
+        for &(x, y) in positions.iter().take(mines) {
+            self.cells[y][x].is_mine = true;
+        }
+    }
+
+    pub fn calculate_numbers(&mut self) {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                if self.cells[y][x].is_mine {
+                    continue;
+                }
+                let mut count = 0;
+                for (nx, ny) in self.neighbors(x, y) {
+                    if self.cells[ny][nx].is_mine {
+                        count += 1;
+                    }
+                }
+                self.cells[y][x].adjacent_mines = count;
+            }
+        }
     }
 
     pub fn get_cell(&self, x: usize, y: usize) -> Option<&Cell> {
