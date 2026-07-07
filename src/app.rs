@@ -1,17 +1,11 @@
-use crate::{
-    game::game::Game,
-    message::Message,
-};
+use crate::{game::game::Game, message::Message};
 
 use iced::{
-    Element,
-    Length,
-    Sandbox,
-    widget::{column, button, text, row, container},
+    Element, Length, Sandbox,
+    widget::{button, column, container, mouse_area, row, text},
 };
 
-
-pub struct Minesweaper{
+pub struct Minesweaper {
     pub game: Game,
 }
 
@@ -29,15 +23,20 @@ impl Sandbox for Minesweaper {
     }
 
     fn update(&mut self, message: Message) {
-       match message {
-            Message::CellPressed(x, y) => {
-                println!("Cell pressed at ({}, {})", x, y);
+        match message {
+            Message::CellLeftClick(x, y) => {
                 self.game.reveal_cell(x, y);
             }
+
+            Message::CellRightClick(x, y) => {
+                print!("Right click on cell ({}, {})\n", x, y);
+                self.game.flag_cell(x, y);
+            }
+
             Message::Restart => {}
         }
     }
-    fn view(&self) -> Element<Message>{
+    fn view(&self) -> Element<Message> {
         let mut board = column![];
         for y in 0..self.game.board.height {
             let mut row = row![];
@@ -54,15 +53,20 @@ impl Sandbox for Minesweaper {
                         }
                     }
                 } else if cell.is_flagged {
-                    "🚩".to_string()
+                    "|>".to_string()
                 } else {
                     "🟩".to_string()
                 };
-                let button = button(text(cell_text))
-                    .width(Length:: Fill)
-                    .height(Length:: Fill)
-                    .on_press(Message::CellPressed(x, y));
-                row = row.push(button);
+                let cell = mouse_area(
+                    container(text(cell_text))
+                        .width(30)
+                        .height(30)
+                        .center_x()
+                        .center_y(),
+                )
+                .on_press(Message::CellLeftClick(x, y))
+                .on_right_press(Message::CellRightClick(x, y));
+                row = row.push(cell);
             }
             board = board.push(row);
         }

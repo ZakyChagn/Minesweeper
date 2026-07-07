@@ -1,5 +1,7 @@
 #[derive(Debug,Clone)]
 pub enum Message {
-    CellPressed(usize, usize),
+    CellLeftClick(usize, usize),
+    CellRightClick(usize, usize),
     Restart,
+    
 }
