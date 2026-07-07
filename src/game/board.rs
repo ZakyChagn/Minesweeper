@@ -71,9 +71,28 @@ impl Board {
     }
 
     pub fn reveal_cell(&mut self, x: usize, y: usize) {
-        if let Some(cell) = self.get_cell_mut(x, y) {
-            cell.is_revealed = true;
+        if x >= self.width || y >= self.height {
+            return;
         }
+
+        if self.cells[y][x].is_revealed || self.cells[y][x].is_flagged {
+            return;
+        }
+
+        self.cells[y][x].is_revealed = true;
+
+        if self.cells[x][y].is_mine {
+            return;
+        }
+
+        if self.cells[y][x].adjacent_mines > 0 {
+            return;
+        }
+
+        for (nx, ny) in self.neighbors(x, y) {
+            self.reveal_cell(nx, ny);
+        }
+
     }
     
     pub fn flag_cell(&mut self, x: usize, y: usize) {
