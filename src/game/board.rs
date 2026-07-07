@@ -1,3 +1,5 @@
+use std::usize;
+
 use rand::seq::SliceRandom;
 
 use super::cell::Cell;
@@ -16,18 +18,27 @@ impl Board {
             height,
             cells,
         };
-        board.place_mines(mines);
-        board.calculate_numbers();
 
         board
     }
 
-    pub fn place_mines(&mut self, mines: usize) {
+    pub fn place_mines(&mut self, mines: usize, x: usize, y: usize) {
         let mut positions: Vec<(usize, usize)> = Vec::new();
 
-        for y in 0..self.height {
-            for x in 0..self.width {
-                positions.push((x, y));
+        for by in 0..self.height {
+            for bx in 0..self.width {
+                if (bx == x && by == y) ||
+                   (bx == x - 1 && by == y) ||
+                   (bx == x + 1 && by == y) ||
+                   (bx == x && by == y - 1) ||
+                      (bx == x && by == y + 1) ||
+                   (bx == x - 1 && by == y - 1) ||
+                   (bx == x + 1 && by == y - 1) ||
+                   (bx == x - 1 && by == y + 1) ||
+                   (bx == x + 1 && by == y + 1) {
+                    continue; // Skip the first revealed cell
+                }
+                positions.push((bx, by));
             }            
         }
         positions.shuffle(&mut rand::thread_rng());
@@ -37,7 +48,7 @@ impl Board {
         }
     }
 
-    pub fn calculate_numbers(&mut self) {
+    pub fn calculate_mines_numbers(&mut self) {
         for y in 0..self.height {
             for x in 0..self.width {
                 if self.cells[y][x].is_mine {
@@ -81,7 +92,7 @@ impl Board {
 
         self.cells[y][x].is_revealed = true;
 
-        if self.cells[x][y].is_mine {
+        if self.cells[y][x].is_mine {
             return;
         }
 
