@@ -8,6 +8,8 @@ pub struct Board {
     pub width: usize,
     pub height: usize,
      cells: Vec<Vec<Cell>>,
+    pub amount_to_reveal: usize,
+    pub mines_placed: usize,
 }
 
 impl Board {
@@ -17,6 +19,8 @@ impl Board {
             width,
             height,
             cells,
+            amount_to_reveal: width * height,
+            mines_placed: 0,
         };
 
         board
@@ -46,6 +50,7 @@ impl Board {
         for &(x, y) in positions.iter().take(mines) {
             self.cells[y][x].is_mine = true;
         }
+        self.mines_placed = mines;
     }
 
     pub fn calculate_mines_numbers(&mut self) {
@@ -91,7 +96,7 @@ impl Board {
         }
 
         self.cells[y][x].is_revealed = true;
-
+        self.amount_to_reveal -= 1;
         if self.cells[y][x].is_mine {
             return true;
         }

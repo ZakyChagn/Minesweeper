@@ -30,6 +30,9 @@ impl Game {
             self.is_game_over = true;
             self.is_game_lost = true;
         }
+        if self.board.amount_to_reveal - self.board.mines_placed == 0 {
+            self.is_game_over = true;
+        }
     }
 
     pub fn flag_cell(&mut self, x: usize, y: usize) {

@@ -13,7 +13,7 @@ impl Sandbox for Minesweaper {
 
     fn new() -> Self {
         Self {
-            game: Game::new(20, 20),
+            game: Game::new(6, 6),
         }
     }
 
