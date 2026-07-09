@@ -36,6 +36,9 @@ impl Game {
     }
 
     pub fn flag_cell(&mut self, x: usize, y: usize) {
+        if self.is_game_over {
+            return;
+        }
         self.board.flag_cell(x, y);
     }
 
