@@ -51,7 +51,7 @@ impl Board {
         for &(x, y) in positions.iter().take(mines) {
             self.cells[y][x].is_mine = true;
         }
-        self.mines_placed = mines;
+        
     }
 
     pub fn calculate_mines_numbers(&mut self) {
