@@ -22,7 +22,7 @@ impl Game {
             return;
         }
         if !self.is_game_started {
-            self.board.place_mines((self.board.width * self.board.height) / 6,x, y); // Place mines in 1/6 of the cells
+            self.board.place_mines(self.board.mines_placed, x, y); // Place mines in 1/6 of the cells
             self.board.calculate_mines_numbers();
             self.is_game_started = true;
         }
@@ -30,7 +30,7 @@ impl Game {
             self.is_game_over = true;
             self.is_game_lost = true;
         }
-        if self.board.amount_to_reveal - self.board.mines_placed == 0 {
+        if self.board.amount_to_reveal == 0 {
             self.is_game_over = true;
         }
     }

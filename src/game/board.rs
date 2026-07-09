@@ -14,13 +14,14 @@ pub struct Board {
 
 impl Board {
     pub fn new(width: usize, height: usize) -> Self {
-        let cells = vec![vec![Cell::new(); width]; height];
+        let cells: Vec<Vec<Cell>> = vec![vec![Cell::new(); width]; height];
+        let mines_ammount = (width * height) / 6;
         let board = Self {
             width,
             height,
             cells,
-            amount_to_reveal: width * height,
-            mines_placed: 0,
+            mines_placed: mines_ammount, //Nombre de mines arbitraire pour l'instant. Ce nombre sera défini dans les paramètres de parties
+            amount_to_reveal: (width * height) - mines_ammount,
         };
 
         board
