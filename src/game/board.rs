@@ -11,9 +11,9 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize, mines : usize) -> Self {
+    pub fn new(width: usize, height: usize) -> Self {
         let cells = vec![vec![Cell::new(); width]; height];
-        let mut board = Self {
+        let board = Self {
             width,
             height,
             cells,
@@ -31,7 +31,7 @@ impl Board {
                    (bx == x - 1 && by == y) ||
                    (bx == x + 1 && by == y) ||
                    (bx == x && by == y - 1) ||
-                      (bx == x && by == y + 1) ||
+                   (bx == x && by == y + 1) ||
                    (bx == x - 1 && by == y - 1) ||
                    (bx == x + 1 && by == y - 1) ||
                    (bx == x - 1 && by == y + 1) ||
@@ -81,29 +81,30 @@ impl Board {
         }
     }
 
-    pub fn reveal_cell(&mut self, x: usize, y: usize) {
+    pub fn reveal_cell(&mut self, x: usize, y: usize) -> bool {
         if x >= self.width || y >= self.height {
-            return;
+             return false;
         }
 
         if self.cells[y][x].is_revealed || self.cells[y][x].is_flagged {
-            return;
+            return false;
         }
 
         self.cells[y][x].is_revealed = true;
 
         if self.cells[y][x].is_mine {
-            return;
+            return true;
         }
 
         if self.cells[y][x].adjacent_mines > 0 {
-            return;
+            false;
+            return false;
         }
 
         for (nx, ny) in self.neighbors(x, y) {
             self.reveal_cell(nx, ny);
         }
-
+        return false;
     }
     
     pub fn flag_cell(&mut self, x: usize, y: usize) {
