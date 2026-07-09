@@ -8,15 +8,20 @@ pub struct Board {
     pub width: usize,
     pub height: usize,
      cells: Vec<Vec<Cell>>,
+    pub amount_to_reveal: usize,
+    pub mines_placed: usize,
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize, mines : usize) -> Self {
-        let cells = vec![vec![Cell::new(); width]; height];
-        let mut board = Self {
+    pub fn new(width: usize, height: usize) -> Self {
+        let cells: Vec<Vec<Cell>> = vec![vec![Cell::new(); width]; height];
+        let mines_ammount = (width * height) / 6;
+        let board = Self {
             width,
             height,
             cells,
+            mines_placed: mines_ammount, //Nombre de mines arbitraire pour l'instant. Ce nombre sera défini dans les paramètres de parties
+            amount_to_reveal: (width * height) - mines_ammount,
         };
 
         board
@@ -31,7 +36,7 @@ impl Board {
                    (bx == x - 1 && by == y) ||
                    (bx == x + 1 && by == y) ||
                    (bx == x && by == y - 1) ||
-                      (bx == x && by == y + 1) ||
+                   (bx == x && by == y + 1) ||
                    (bx == x - 1 && by == y - 1) ||
                    (bx == x + 1 && by == y - 1) ||
                    (bx == x - 1 && by == y + 1) ||
@@ -46,6 +51,7 @@ impl Board {
         for &(x, y) in positions.iter().take(mines) {
             self.cells[y][x].is_mine = true;
         }
+        
     }
 
     pub fn calculate_mines_numbers(&mut self) {
@@ -81,29 +87,30 @@ impl Board {
         }
     }
 
-    pub fn reveal_cell(&mut self, x: usize, y: usize) {
+    pub fn reveal_cell(&mut self, x: usize, y: usize) -> bool {
         if x >= self.width || y >= self.height {
-            return;
+             return false;
         }
 
         if self.cells[y][x].is_revealed || self.cells[y][x].is_flagged {
-            return;
+            return false;
         }
 
         self.cells[y][x].is_revealed = true;
-
+        self.amount_to_reveal -= 1;
         if self.cells[y][x].is_mine {
-            return;
+            return true;
         }
 
         if self.cells[y][x].adjacent_mines > 0 {
-            return;
+            false;
+            return false;
         }
 
         for (nx, ny) in self.neighbors(x, y) {
             self.reveal_cell(nx, ny);
         }
-
+        return false;
     }
     
     pub fn flag_cell(&mut self, x: usize, y: usize) {
