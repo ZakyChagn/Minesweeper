@@ -7,9 +7,7 @@ use app::Minesweaper;
 use counter::Counter;
 
 use iced::{
-    Sandbox, Settings, Element,
-    widget::{column, button, text, container},
-    Alignment, Length,
+    Alignment, Application, Element, Length, Sandbox, Settings, widget::{button, column, container, text},
 };
 
 pub fn main() -> iced::Result {
