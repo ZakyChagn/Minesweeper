@@ -32,18 +32,28 @@ impl Board {
 
         for by in 0..self.height {
             for bx in 0..self.width {
-                if (bx == x && by == y) ||
-                   (bx == x - 1 && by == y) ||
-                   (bx == x + 1 && by == y) ||
-                   (bx == x && by == y - 1) ||
-                   (bx == x && by == y + 1) ||
-                   (bx == x - 1 && by == y - 1) ||
-                   (bx == x + 1 && by == y - 1) ||
-                   (bx == x - 1 && by == y + 1) ||
-                   (bx == x + 1 && by == y + 1) {
-                    continue; // Skip the first revealed cell
+
+                // Vérifie si la cellule est adjacente
+                let dx = bx as isize - x as isize;
+                let dy = by as isize - y as isize;
+
+                let is_adjacent = dx.abs() <= 1 && dy.abs() <= 1;
+
+                // if (bx == x && by == y) ||
+                //    (bx == x - 1 && by == y) ||
+                //    (bx == x + 1 && by == y) ||
+                //    (bx == x && by == y - 1) ||
+                //    (bx == x && by == y + 1) ||
+                //    (bx == x - 1 && by == y - 1) ||
+                //    (bx == x + 1 && by == y - 1) ||
+                //    (bx == x - 1 && by == y + 1) ||
+                //    (bx == x + 1 && by == y + 1) {
+                //     continue; // Skip the first revealed cell
+                // }
+                if !is_adjacent{
+                    positions.push((bx, by));
+
                 }
-                positions.push((bx, by));
             }            
         }
         positions.shuffle(&mut rand::thread_rng());
