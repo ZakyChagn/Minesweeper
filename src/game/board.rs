@@ -7,7 +7,7 @@ use super::cell::Cell;
 pub struct Board {
     pub width: usize,
     pub height: usize,
-     cells: Vec<Vec<Cell>>,
+    pub cells: Vec<Vec<Cell>>,
     pub amount_to_reveal: usize,
     pub mines_placed: usize,
 }
@@ -29,39 +29,26 @@ impl Board {
 
     pub fn place_mines(&mut self, mines: usize, x: usize, y: usize) {
         let mut positions: Vec<(usize, usize)> = Vec::new();
-
+        println!("Positions disponibles: {}", positions.len());
+        println!("Mines demandées: {}", mines);
         for by in 0..self.height {
             for bx in 0..self.width {
-
                 // Vérifie si la cellule est adjacente
                 let dx = bx as isize - x as isize;
                 let dy = by as isize - y as isize;
 
                 let is_adjacent = dx.abs() <= 1 && dy.abs() <= 1;
-
-                // if (bx == x && by == y) ||
-                //    (bx == x - 1 && by == y) ||
-                //    (bx == x + 1 && by == y) ||
-                //    (bx == x && by == y - 1) ||
-                //    (bx == x && by == y + 1) ||
-                //    (bx == x - 1 && by == y - 1) ||
-                //    (bx == x + 1 && by == y - 1) ||
-                //    (bx == x - 1 && by == y + 1) ||
-                //    (bx == x + 1 && by == y + 1) {
-                //     continue; // Skip the first revealed cell
-                // }
-                if !is_adjacent{
+                
+                if !is_adjacent {
                     positions.push((bx, by));
-
                 }
-            }            
+            }
         }
         positions.shuffle(&mut rand::thread_rng());
 
         for &(x, y) in positions.iter().take(mines) {
             self.cells[y][x].is_mine = true;
         }
-        
     }
 
     pub fn calculate_mines_numbers(&mut self) {
@@ -99,7 +86,7 @@ impl Board {
 
     pub fn reveal_cell(&mut self, x: usize, y: usize) -> bool {
         if x >= self.width || y >= self.height {
-             return false;
+            return false;
         }
 
         if self.cells[y][x].is_revealed || self.cells[y][x].is_flagged {
@@ -107,7 +94,9 @@ impl Board {
         }
 
         self.cells[y][x].is_revealed = true;
-        self.amount_to_reveal -= 1;
+        if self.amount_to_reveal > 0 {
+            self.amount_to_reveal -= 1;
+        }
         if self.cells[y][x].is_mine {
             return true;
         }
@@ -122,13 +111,13 @@ impl Board {
         }
         return false;
     }
-    
+
     pub fn flag_cell(&mut self, x: usize, y: usize) {
         if let Some(cell) = self.get_cell_mut(x, y) {
             cell.is_flagged = !cell.is_flagged;
         }
     }
-    
+
     pub fn neighbors(&self, x: usize, y: usize) -> Vec<(usize, usize)> {
         let mut neighbors = Vec::new();
         for dx in -1..=1 {

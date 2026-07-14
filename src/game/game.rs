@@ -10,7 +10,7 @@ pub struct Game {
 impl Game {
     pub fn new(width: usize, height: usize) -> Self {
         Self {
-            board: Board::new(width, height), // Place mines in 1/6 of the cells
+            board: Board::new(width, height),
             is_game_started: false,
             is_game_over: false,
             is_game_lost: false,
@@ -22,7 +22,7 @@ impl Game {
             return;
         }
         if !self.is_game_started {
-            self.board.place_mines(self.board.mines_placed, x, y); // Place mines in 1/6 of the cells
+            self.board.place_mines(self.board.mines_placed, x, y); 
             self.board.calculate_mines_numbers();
             self.is_game_started = true;
         }
@@ -36,7 +36,7 @@ impl Game {
     }
 
     pub fn flag_cell(&mut self, x: usize, y: usize) {
-        if self.is_game_over {
+        if self.is_game_over || !self.is_game_started {
             return;
         }
         self.board.flag_cell(x, y);
